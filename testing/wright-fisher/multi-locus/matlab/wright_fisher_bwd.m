@@ -38,15 +38,15 @@ for cSim = 1:nSim
         end
         for n = 1:N
             if (rand >= alphas(t))
+                log_Qs(cSim) = log_Qs(cSim) + log(1-alphas(t));     % altered
                 for i = 1:Dz
                     Z(t,n,i) = (rand<P1s(i,t));
-                    log_Qs(cSim) = log_Qs(cSim) + log(1-alphas(t));
                     log_Qs(cSim) = log_Qs(cSim) + Z(t,n,i)*log(P1s(i,t)) + (1-Z(t,n,i))*log(1-P1s(i,t));
                 end
             else
+                log_Qs(cSim) = log_Qs(cSim) + log(alphas(t));       % altered
                 for i = 1:Dz
-                    Z(t,n,i) = (rand<P2(i));
-                    log_Qs(cSim) = log_Qs(cSim) + log(alphas(t));
+                    Z(t,n,i) = (rand<P2(i));                 
                     log_Qs(cSim) = log_Qs(cSim) + Z(t,n,i)*log(P2(i)) + (1-Z(t,n,i))*log(1-P2(i));
                 end
             end
