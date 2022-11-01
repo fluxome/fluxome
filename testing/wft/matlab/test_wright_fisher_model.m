@@ -1,27 +1,25 @@
 function test_wright_fisher_model
 
 rng(100);
-
 N = 100; % size of population
 Dz = 9; % dimensionality of Z (# variants)
 Dx = 3; % dimensionality of X (# genes) 
 T = 10;  % # time-points
-nSim1 = 10; % # fwd simulations
-nSim2 = 10; % # bkw simulations
+nSim1 = 5; % # fwd simulations
+nSim2 = 5; % # bkw simulations
 theta_f = [1  0 -0.5]';  % log relative fitness of gene
 theta_h = 0.05 * ones(Dz,1); % mutation rate
 theta_z0 = 0.5 * ones(Dz,1); % initial probability of variants
 theta_g_mask = [repmat([1 0 0],[3 1]) ; repmat([0 1 0],[3 1]); ...
     repmat([0 0 1],[3 1])]; % mask for g-p map
 theta_g = randn(Dz,Dx) .* theta_g_mask; % true g-p map
-bin_expr_flag = 1; % binary expression flag
+bin_expr_flag = 0; % binary expression flag
 % alpha = 0.8; % for fixed alpha
 bwd_p_flip = 0.05; % binary flip prob for kl-dist matching
-bwd_sigma = 0.5; % gaussian sig value for kl-dist matching
-fwd_sigma = 0.2; % gaussian sig value for fwd model
+bwd_sigma = 0.1; % gaussian sig value for kl-dist matching
+fwd_sigma = 0.1; % gaussian sig value for fwd model
 verbose = 0; % verbosity
 ep = 0.01; % for smoothing proposal dist
-nEpoch = 10; % # training epochs
     
 sd = 10;
 [Zs, Xs, Pis, log_Ps] = wright_fisher_fwd(N,T,nSim1,theta_f,theta_h,theta_z0,theta_g,bin_expr_flag,fwd_sigma,sd,verbose);
