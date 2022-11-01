@@ -1,7 +1,7 @@
 function train_wright_fisher_model
 
+% binary transcriptome example
 rng(100);
-
 N = 100; % size of population
 Dz = 9; % dimensionality of Z (# variants)
 Dx = 3; % dimensionality of X (# genes) 
@@ -22,6 +22,33 @@ fwd_sigma = 0.2; % gaussian sig value for fwd model
 verbose = 0; % verbosity
 ep = 0.01; % for smoothing proposal dist
 nEpoch = 10; % # training epochs
+geno_kl_weight = 1; % weight in the kl-div for genotype
+maxIter = 2; % Max iterations in Matlab fminunc
+
+% % continuous transcriptome example
+% rng(200);
+% N = 20; % size of population
+% Dz = 9; % dimensionality of Z (# variants)
+% Dx = 3; % dimensionality of X (# genes) 
+% T = 5;  % # time-points
+% nSim1 = 30; % # fwd simulations
+% nSim2 = 10; % # bkw simulations
+% theta_f = [1  0 -0.5]';  % log relative fitness of gene
+% theta_h = 0.05 * ones(Dz,1); % mutation rate
+% theta_z0 = 0.5 * ones(Dz,1); % initial probability of variants
+% theta_g_mask = [repmat([1 0 0],[3 1]) ; repmat([0 1 0],[3 1]); ...
+%     repmat([0 0 1],[3 1])]; % mask for g-p map
+% theta_g = randn(Dz,Dx) .* theta_g_mask; % true g-p map
+% bin_expr_flag = 0; % binary expression flag
+% % alpha = 0.8; % for fixed alpha
+% bwd_p_flip = 0.001; % binary flip prob for kl-dist matching
+% bwd_sigma = 0.2; % gaussian sig value for kl-dist matching
+% fwd_sigma = 0.05; % gaussian sig value for fwd model
+% verbose = 0; % verbosity
+% ep = 0.01; % for smoothing proposal dist
+% nEpoch = 10; % # training epochs
+% geno_kl_weight = 0.1; % weight in the kl-div for genotype
+% maxIter = 2; % Max iterations in Matlab fminunc
 
 %%% ground truth
 
@@ -73,11 +100,11 @@ for cEpoch = 1:nEpoch
             else
                 log_PX_mat = zeros(N,N);
                 for n = 1:N
-                    [dum vec] = mvnpdf_log(squeeze(squeeze(Xs{i}(end,:,:)), Xs_fwd{j}(end,n,:)), bwd_sigma*eye(Dx));
+                    [dum vec] = mvnpdf_log(squeeze(Xs{i}(end,:,:)), squeeze(Xs_fwd{j}(end,n,:))', bwd_sigma*eye(Dx));
                     log_PX_mat(:,n) = vec;
                 end                    
             end
-            ds(j) = sum(logsumexp((log(1/N) + log_PZ_mat + log_PX_mat),2));
+            ds(j) = sum(logsumexp((log(1/N) + geno_kl_weight*log_PZ_mat + log_PX_mat),2));
         end
         fwd_idx = find(ds==min(ds),1);
         alphas = zeros(1,T-1);
@@ -110,7 +137,7 @@ for cEpoch = 1:nEpoch
     %%% M-step
     % update theta_f
     fun = @(x)-loglike(prop_Zs,prop_Xs,prop_Pis,prop_rs,theta_g_mask,bin_expr_flag,fwd_sigma,x);
-    opts = optimoptions('fminunc','MaxIterations',2,'Display','iter');
+    opts = optimoptions('fminunc','MaxIterations',maxIter,'Display','iter');
     [theta_est_new,fval] = fminunc(fun,[theta_f_est ; theta_g_est(theta_g_mask(:)~=0)],opts);    
     theta_f_est = theta_est_new(1:Dx);
     theta_f_ests(:,cEpoch+1) = theta_f_est;
@@ -185,4 +212,5 @@ for i = 1:nSim1
         end   
     end
 end
+
 
