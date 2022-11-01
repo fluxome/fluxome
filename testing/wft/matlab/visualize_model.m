@@ -1,6 +1,7 @@
 function visualize_model
 
 load('model','theta_f_ests','theta_g_ests','lls','theta_f','theta_g','theta_g_mask');
+% load('model_continuous','theta_f_ests','theta_g_ests','lls','theta_f','theta_g','theta_g_mask');
 
 Dx = length(theta_f);
 Dz = size(theta_g,1);
