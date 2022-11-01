@@ -41,9 +41,9 @@ for cSim = 1:nSim
                         log_Qs(cSim) = log_Qs(cSim) + fl*log(bwd_p_flip) + (1-fl)*log(1-bwd_p_flip);
                     end
                 else
-                    vec = mvnrnd(P1s_X(n_sel,:,t)',bwd_sigma*eye(Dx));
+                    vec = mvnrnd(P1s_X(n_sel,:,t),bwd_sigma*eye(Dx));
                     X(t,n,:) = vec;
-                    [dum val] = mvnpdf_log(vec,P1s_X(n_sel,:,t)',bwd_sigma*eye(Dx));
+                    [dum val] = mvnpdf_log(vec,P1s_X(n_sel,:,t),bwd_sigma*eye(Dx));
                     log_Qs(cSim) = log_Qs(cSim) + val;
                 end
             else
@@ -60,9 +60,9 @@ for cSim = 1:nSim
                         log_Qs(cSim) = log_Qs(cSim) + fl*log(bwd_p_flip) + (1-fl)*log(1-bwd_p_flip);
                     end
                 else
-                    vec = mvnrnd(P2_X(n_sel,:)',bwd_sigma*eye(Dx));
+                    vec = mvnrnd(P2_X(n_sel,:),bwd_sigma*eye(Dx));
                     X(t,n,:) = vec;
-                    [dum val] = mvnpdf_log(vec,P2_X(n_sel,:)',bwd_sigma*eye(Dx));
+                    [dum val] = mvnpdf_log(vec,P2_X(n_sel,:),bwd_sigma*eye(Dx));
                     log_Qs(cSim) = log_Qs(cSim) + val;
                 end
             end
