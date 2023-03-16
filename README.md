@@ -1,24 +1,24 @@
-# igtme
+# fluxome
 
 <p align="center">
     <em>integrated probabilistic modeling of stochastic gene regulatory networks and cell state trajectories</em>
 </p>
 
-[![build](https://github.com/biotheorylab/igtme/workflows/Build/badge.svg)](https://github.com/biotheorylab/igtme/actions)
-[![codecov](https://codecov.io/gh/biotheorylab/igtme/branch/master/graph/badge.svg)](https://codecov.io/gh/biotheorylab/igtme)
-[![PyPI version](https://badge.fury.io/py/igtme.svg)](https://badge.fury.io/py/igtme)
+[![build](https://github.com/biotheorylab/fluxome/workflows/Build/badge.svg)](https://github.com/biotheorylab/fluxome/actions)
+[![codecov](https://codecov.io/gh/biotheorylab/fluxome/branch/main/graph/badge.svg)](https://codecov.io/gh/biotheorylab/fluxome)
+[![PyPI version](https://badge.fury.io/py/fluxome.svg)](https://badge.fury.io/py/fluxome)
 
 ---
 
-**Documentation**: <a href="https://biotheorylab.github.io/igtme/" target="_blank">https://biotheorylab.github.io/igtme/</a>
+**Documentation**: <a href="https://biotheorylab.github.io/fluxome/" target="_blank">https://biotheorylab.github.io/fluxome/</a>
 
-**Source Code**: <a href="https://github.com/biotheorylab/igtme" target="_blank">https://github.com/biotheorylab/igtme</a>
+**Source Code**: <a href="https://github.com/biotheorylab/fluxome" target="_blank">https://github.com/biotheorylab/fluxome</a>
 
 ---
 
 **Table of Contents**
 
-- [igtme](#igtme)
+- [fluxome](#fluxome)
   - [Installation](#installation)
   - [Development](#development)
     - [Specification](#specification)
@@ -32,7 +32,7 @@
 ## Installation
 
 ```console
-python -m pip install "igtme @ git+https://github.com/biotheorylab/igtme.git@main"
+python -m pip install "fluxome @ git+https://github.com/biotheorylab/fluxome.git@main"
 ```
 
 ## Development

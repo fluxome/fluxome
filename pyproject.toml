@@ -49,7 +49,7 @@ unfixable = [
 ]
 
 [tool.ruff.isort]
-known-first-party = ["igtme"]
+known-first-party = ["fluxome"]
 
 [tool.ruff.flake8-tidy-imports]
 ban-relative-imports = "all"
@@ -59,20 +59,20 @@ ban-relative-imports = "all"
 "tests/**/*" = ["PLR2004", "S101", "TID252"]
 
 [tool.pytest.ini_options]
-addopts = "--cov=src/igtme/ --cov-report=term-missing"
+addopts = "--cov=src/fluxome/ --cov-report=term-missing"
 asyncio_mode = "strict"
 
 [tool.coverage.run]
-source_pkgs = ["igtme", "tests"]
+source_pkgs = ["fluxome", "tests"]
 branch = true
 parallel = true
 omit = [
-  "src/igtme/__about__.py",
+  "src/fluxome/__about__.py",
 ]
 
 [tool.coverage.paths]
-igtme = ["src/igtme", "*/igtme/src/igtme"]
-tests = ["tests", "*/igtme/tests"]
+fluxome = ["src/fluxome", "*/fluxome/src/fluxome"]
+tests = ["tests", "*/fluxome/tests"]
 
 [tool.coverage.report]
 exclude_lines = [
@@ -88,7 +88,7 @@ exclude_lines = [
 allow-direct-references = true
 
 [tool.hatch.version]
-path = "src/igtme/__about__.py"
+path = "src/fluxome/__about__.py"
 
 [tool.hatch.envs.default]
 python = "3.10"
@@ -110,12 +110,12 @@ test-cov-xml = "pytest -rA --cov-report=xml"
 lint = [
   "black .",
   "ruff --fix .",
-  "mypy src/igtme/",
+  "mypy src/fluxome/",
 ]
 lint-check = [
   "black --check .",
   "ruff .",
-  "mypy src/igtme/",
+  "mypy src/fluxome/",
 ]
 docs-serve = "mkdocs serve"
 docs-build = "mkdocs build"
@@ -125,9 +125,9 @@ requires = ["hatchling", "hatch-regex-commit"]
 build-backend = "hatchling.build"
 
 [project]
-name = "igtme"
+name = "fluxome"
 authors = [
-  { name = "igtme", email = "igtme@biotheorylab.net" },
+  { name = "fluxome", email = "fluxome@biotheorylab.net" },
   { name = "Cameron Smith", email = "cameron.ray.smith@gmail.com" },
   { name = "Jonathan Warrell", email = "jonathan.warrell@gmail.com" },
 ]
@@ -143,9 +143,9 @@ dependencies = [
 ]
 
 [project.scripts]
-igtme = "igtme.cli:igtme"
+fluxome = "fluxome.cli:fluxome"
 
 [project.urls]
-Documentation = "https://biotheorylab.github.io/igtme/"
-Issues = "https://github.com/biotheorylab/igtme/issues"
-Source = "https://github.com/biotheorylab/igtme"
+Documentation = "https://biotheorylab.github.io/fluxome/"
+Issues = "https://github.com/biotheorylab/fluxome/issues"
+Source = "https://github.com/biotheorylab/fluxome"

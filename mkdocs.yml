@@ -1,8 +1,8 @@
-site_name: igtme
+site_name: fluxome
 site_description: integrated probabilistic modeling of stochastic gene regulatory networks and cell state trajectories
 
-repo_url: https://github.com/biotheorylab/igtme
-repo_name: biotheorylab/igtme
+repo_url: https://github.com/biotheorylab/fluxome
+repo_name: biotheorylab/fluxome
 
 theme:
     name: material
@@ -50,9 +50,9 @@ plugins:
 
 watch:
     - docs
-    - src/igtme
+    - src/fluxome
 
 nav:
     - About: index.md
     - Reference:
-        - igtme: reference/igtme.md
+        - fluxome: reference/fluxome.md

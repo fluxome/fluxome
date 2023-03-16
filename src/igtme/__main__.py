@@ -1,6 +1,6 @@
 import sys
 
 if __name__ == "__main__":
-    from igtme.cli import igtme
+    from fluxome.cli import fluxome
 
-    sys.exit(igtme())
+    sys.exit(fluxome())
