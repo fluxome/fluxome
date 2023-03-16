@@ -1,6 +1,6 @@
 import pytest
 
-from igtme import add
+from fluxome import add
 
 
 @pytest.mark.parametrize(
