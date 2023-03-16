@@ -1,10 +1,6 @@
-import click
+import sys
 
-from . import __version__
+if __name__ == "__main__":
+    from igtme.cli import igtme
 
-
-@click.command()
-@click.version_option(version=__version__)
-def main():
-    """Command line interface for igtme."""
-    click.echo("igtme")
+    sys.exit(igtme())
