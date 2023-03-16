@@ -42,10 +42,9 @@ import numpy as np
 import pyro
 import pyro.distributions as dist
 import pyro.infer.autoguide as auto
-import pyro.optim as optim
-import pyro.poutine as poutine
 import sympy as sym
 import torch
+from pyro import optim, poutine
 from pyro.infer import SVI, TraceEnum_ELBO, config_enumerate
 
 # %%
@@ -60,26 +59,14 @@ ep = 1  # variance of all Gaussian random variables
 # %%
 @config_enumerate
 def model(data):
-
-    theta_f = pyro.sample(
-        "th_f", dist.Normal(torch.zeros(D, 1), torch.ones(D, 1)).to_event(2)
-    )
-    theta_g = pyro.sample(
-        "th_g", dist.Normal(torch.zeros(D, D), torch.ones(D, D)).to_event(2)
-    )
-    theta_h = pyro.sample(
-        "th_h", dist.Normal(torch.zeros(D, D), torch.ones(D, D)).to_event(2)
-    )
-    theta_z0 = pyro.sample(
-        "th_z0", dist.Uniform(torch.zeros(1, D), torch.ones(1, D)).to_event(2)
-    )
+    theta_f = pyro.sample("th_f", dist.Normal(torch.zeros(D, 1), torch.ones(D, 1)).to_event(2))
+    theta_g = pyro.sample("th_g", dist.Normal(torch.zeros(D, D), torch.ones(D, D)).to_event(2))
+    theta_h = pyro.sample("th_h", dist.Normal(torch.zeros(D, D), torch.ones(D, D)).to_event(2))
+    theta_z0 = pyro.sample("th_z0", dist.Uniform(torch.zeros(1, D), torch.ones(1, D)).to_event(2))
 
     count = 0
     for i in pyro.plate("plate1", N):
-
-        z0 = pyro.sample(
-            "z0_{}".format(i), dist.Normal(theta_z0, ep * torch.ones(1, D)).to_event(2)
-        )
+        z0 = pyro.sample(f"z0_{i}", dist.Normal(theta_z0, ep * torch.ones(1, D)).to_event(2))
         z0 = 1 / (1 + torch.exp(-z0))
 
         while 1:
@@ -87,13 +74,12 @@ def model(data):
             ls = r_nest_list(z0, theta_f, theta_g, theta_h, 2**count, 1, T)
             xs = extract_level(ls, [], T)
             # xs = extract_level(ls, torch.zeros((8)), T)
-            samp = []
             if len(xs) > 0:
                 break
 
-        for j in pyro.plate("plate3_{}".format(i), M):
+        for j in pyro.plate(f"plate3_{i}", M):
             idx = pyro.sample(
-                "samp_{}_{}".format(i, j),
+                f"samp_{i}_{j}",
                 dist.Categorical(
                     torch.ones(
                         len(xs),
@@ -111,7 +97,7 @@ def model(data):
 
             smp = xs[idx]
             pyro.sample(
-                "obs_{}_{}".format(i, j),
+                f"obs_{i}_{j}",
                 dist.Bernoulli((1 - fl) * (smp) + fl * (1 - (smp))).to_event(1),
                 obs=data[i][j],
             )
@@ -119,27 +105,15 @@ def model(data):
 
 # %%
 def generate_data():
-
-    theta_f = pyro.sample(
-        "th_f", dist.Normal(torch.zeros(D, 1), torch.ones(D, 1)).to_event(2)
-    )
-    theta_g = pyro.sample(
-        "th_g", dist.Normal(torch.zeros(D, D), torch.ones(D, D)).to_event(2)
-    )
-    theta_h = pyro.sample(
-        "th_h", dist.Normal(torch.zeros(D, D), torch.ones(D, D)).to_event(2)
-    )
-    theta_z0 = pyro.sample(
-        "th_z0", dist.Normal(torch.zeros(1, D), torch.ones(1, D)).to_event(2)
-    )
+    theta_f = pyro.sample("th_f", dist.Normal(torch.zeros(D, 1), torch.ones(D, 1)).to_event(2))
+    theta_g = pyro.sample("th_g", dist.Normal(torch.zeros(D, D), torch.ones(D, D)).to_event(2))
+    theta_h = pyro.sample("th_h", dist.Normal(torch.zeros(D, D), torch.ones(D, D)).to_event(2))
+    theta_z0 = pyro.sample("th_z0", dist.Normal(torch.zeros(1, D), torch.ones(1, D)).to_event(2))
 
     data = []
     count = 0
     for i in range(0, N):
-
-        z0 = pyro.sample(
-            "z0_{}".format(i), dist.Normal(theta_z0, ep * torch.ones(1, D)).to_event(2)
-        )
+        z0 = pyro.sample(f"z0_{i}", dist.Normal(theta_z0, ep * torch.ones(1, D)).to_event(2))
         z0 = 1 / (1 + torch.exp(-z0))
 
         while 1:
@@ -147,14 +121,13 @@ def generate_data():
             ls = r_nest_list(z0, theta_f, theta_g, theta_h, 2**count, 1, T)
             xs = extract_level(ls, [], T)
             # xs = extract_level(ls, torch.zeros((8)), T)
-            samp = []
             if len(xs) > 0:
                 break
 
         dat = []
         for j in range(0, M):
             idx = pyro.sample(
-                "samp_{}_{}".format(i, j),
+                f"samp_{i}_{j}",
                 dist.Categorical(
                     torch.ones(
                         len(xs),
@@ -172,7 +145,7 @@ def generate_data():
             smp = xs[idx]
 
             d = pyro.sample(
-                "obs_{}_{}".format(i, j),
+                f"obs_{i}_{j}",
                 dist.Bernoulli((1 - fl) * (smp) + fl * (1 - (smp))).to_event(1),
             )
 
@@ -203,12 +176,12 @@ def h(z, theta):
 def r_nest_list(z, theta_f, theta_g, theta_h, step, level, maxL):
     # p = torch.tensor([float(1)]) # not used
     x = pyro.sample(
-        "x_{}".format(step),
+        f"x_{step}",
         dist.Normal(g(z, theta_g), ep * torch.ones(1, D)).to_event(2),
     )
     x = 1 / (1 + torch.exp(-x))
 
-    w = pyro.sample("w_{}".format(step), dist.Exponential(f(x, theta_f)))
+    w = pyro.sample(f"w_{step}", dist.Exponential(f(x, theta_f)))
     if level == maxL:
         w = torch.tensor(0.0)
     # else:
@@ -217,9 +190,9 @@ def r_nest_list(z, theta_f, theta_g, theta_h, step, level, maxL):
     ls = [((level, step, w1), z, x)]
 
     if w1 > 0:
-        for ii in pyro.plate("node_{}".format(step), 2):
+        for ii in pyro.plate(f"node_{step}", 2):
             z1 = pyro.sample(
-                "z1_{}_{}".format(step, ii),
+                f"z1_{step}_{ii}",
                 dist.Normal(h(z, theta_h), ep * torch.ones(1, D)).to_event(2),
             )
             z1 = 1 / (1 + torch.exp(-z1))
@@ -304,16 +277,13 @@ elbo = TraceEnum_ELBO()
 elbo.loss(model, config_enumerate(auto_guide, "sequential"), data)
 
 pyro.clear_param_store()
-svi = SVI(
-    model=model, guide=auto_guide, optim=optim.ClippedAdam({"lr": 0.001}), loss=elbo
-)
+svi = SVI(model=model, guide=auto_guide, optim=optim.ClippedAdam({"lr": 0.001}), loss=elbo)
 
 # Optimize
 print("Optimizing...")
 start_time = time.time()
 optimization_steps = 10
 for i in range(optimization_steps):
-
     loss = svi.step(data)
     print(f"iter: {i}, loss: {round(loss,2)}", end="\n")
 

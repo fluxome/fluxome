@@ -48,9 +48,9 @@ from typing import List
 
 import numpy as np
 
-
 # %% [markdown]
 # ## Methods
+
 
 # %% {"tags": []}
 def wright_fisher_fwd(
@@ -107,13 +107,12 @@ def wright_fisher_fwd(
 
     Zs = [None] * nSim
     Pis = [None] * nSim  # np.empty((nSim))
-    log_Ps = np.zeros((nSim))
+    log_Ps = np.zeros(nSim)
     Dz = len(theta_f)
 
     np.random.seed(seed)
 
     for cSim in range(nSim):
-
         if verbose:
             print(f"\nsimulation: {cSim}\n")
 
@@ -121,13 +120,10 @@ def wright_fisher_fwd(
         Pi = np.zeros((T, N))
         for i in range(Dz):
             Z[0, :, i] = np.random.rand(1, N) < theta_z0[i]
-            log_Ps[cSim] = np.sum(
-                Z[0, :, i] * np.log(theta_z0[i])
-                + (1 - Z[0, :, i]) * np.log(1 - theta_z0[i])
-            )
+            log_Ps[cSim] = np.sum(Z[0, :, i] * np.log(theta_z0[i]) + (1 - Z[0, :, i]) * np.log(1 - theta_z0[i]))
 
         for t in range(1, T):
-            fs = np.zeros((N))
+            fs = np.zeros(N)
             for i in range(Dz):
                 fs = fs + Z[t - 1, :, i] * theta_f[i]
 
@@ -153,16 +149,14 @@ def wright_fisher_fwd(
 
         if verbose:
             print("\t* array/list sizes\n")
-            for key, value in dict(
-                [
-                    ("Z", Z),
-                    ("Pi", Pi),
-                    ("log_Ps", log_Ps),
-                    ("fs", fs),
-                    ("Zs", Zs),
-                    ("Pis", Pis),
-                ]
-            ).items():
+            for key, value in {
+                "Z": Z,
+                "Pi": Pi,
+                "log_Ps": log_Ps,
+                "fs": fs,
+                "Zs": Zs,
+                "Pis": Pis,
+            }.items():
                 print(f"\t\t- {key}: {np.array(value, dtype=object).shape}")
 
     if verbose:
@@ -182,16 +176,13 @@ def wright_fisher_bwd(
     seed: float = 100,
     verbose: bool = False,
 ) -> (np.ndarray, np.ndarray, np.ndarray, np.ndarray):
-
-    Zs = [None] * nSim
-    Pis = [None] * nSim
-    log_Qs = np.zeros((nSim))
+    np.zeros(nSim)
     Dz = len(theta_f)
 
     np.random.seed(seed)
 
-    for t in range(T - 1):
-        for i in range(Dz):
+    for _t in range(T - 1):
+        for _i in range(Dz):
             pass
 
 
@@ -238,9 +229,7 @@ ep = 0
 # ### wright_fisher_fwd
 
 # %% {"tags": []}
-Zs, Pis, log_Ps = wright_fisher_fwd(
-    T, N, nSim1, theta_f, theta_h, theta_z0, seed, verbose
-);
+Zs, Pis, log_Ps = wright_fisher_fwd(T, N, nSim1, theta_f, theta_h, theta_z0, seed, verbose)
 
 # %% {"tags": []}
 type(Zs)
@@ -255,7 +244,7 @@ assert np.array(Pis).shape == (nSim1, T, N)
 assert np.array(log_Ps).shape == (nSim1,)
 
 # %% {"tags": []}
-for key, value in dict([("Zs", Zs), ("Pis", Pis), ("log_Ps", log_Ps)]).items():
+for key, value in {"Zs": Zs, "Pis": Pis, "log_Ps": log_Ps}.items():
     print(f"size {key}: {np.array(value).shape}")
 
 # %%
@@ -265,7 +254,7 @@ for key, value in dict([("Zs", Zs), ("Pis", Pis), ("log_Ps", log_Ps)]).items():
 
 # %% {"tags": []}
 P1s = np.zeros((Dz, T - 1))
-alphas = np.zeros((T - 1))
+alphas = np.zeros(T - 1)
 
 
 # print(type(i))
