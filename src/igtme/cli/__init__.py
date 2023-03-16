@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2023-present Cameron Smith <cameron.ray.smith@gmail.com>
+# SPDX-FileCopyrightText: 2023-present biotheorylab
 #
 # SPDX-License-Identifier: MIT
 import click
